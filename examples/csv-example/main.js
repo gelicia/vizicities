@@ -169,7 +169,7 @@ var csvConfig = {
     }
   },
   output: {
-    type: "BlueprintOutputDebugPoints",
+    type: "BlueprintOutputDebugPointsGPS",
     options: {}
   },
   triggers: [{

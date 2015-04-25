@@ -11,7 +11,7 @@
   //   type: "BlueprintOutputDebugPoints",
   //   options: {}
   // }
-  VIZI.BlueprintOutputDebugPoints = function(options) {
+  VIZI.BlueprintOutputDebugPointsGPS = function(options) {
     var self = this;
 
     VIZI.BlueprintOutput.call(self, options);
@@ -34,10 +34,10 @@
     self.world;
   };
 
-  VIZI.BlueprintOutputDebugPoints.prototype = Object.create( VIZI.BlueprintOutput.prototype );
+  VIZI.BlueprintOutputDebugPointsGPS.prototype = Object.create( VIZI.BlueprintOutput.prototype );
 
   // Initialise instance and start automated processes
-  VIZI.BlueprintOutputDebugPoints.prototype.init = function() {
+  VIZI.BlueprintOutputDebugPointsGPS.prototype.init = function() {
     var self = this;
 
     self.emit("initialised");
@@ -46,7 +46,7 @@
   // {
   //   coordinates: [lon, lat]
   // }
-  VIZI.BlueprintOutputDebugPoints.prototype.outputPoints = function(data) {
+  VIZI.BlueprintOutputDebugPointsGPS.prototype.outputPoints = function(data) {
     var self = this;
 
    // console.log(data);
@@ -127,7 +127,7 @@
     self.add(combinedMesh);
   };
 
-  VIZI.BlueprintOutputDebugPoints.prototype.onAdd = function(world) {
+  VIZI.BlueprintOutputDebugPointsGPS.prototype.onAdd = function(world) {
     var self = this;
     self.world = world;
     self.init();

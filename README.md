@@ -19,6 +19,11 @@ Already know what you're doing? Awesome! ViziCities is [installable through Bowe
 $ bower install -p vizicities
 ```
 
+```bash
+$ python -m SimpleHTTPServer
+```
+
+
 
 ## ViziCities examples
 
