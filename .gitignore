@@ -1,7 +1,7 @@
 ### ViziCities ###
 bower_components
 src/UI/*.js
-build/*.js
+build
 
 # Created by https://www.gitignore.io
 
