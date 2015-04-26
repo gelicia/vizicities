@@ -2,7 +2,7 @@ var world = new VIZI.World({
   viewport: document.querySelector("#vizicities-viewport"),
   layersUI: true,
   picking: true,
-  center: new VIZI.LatLon(44.972249, -93.274105) // Collada
+  center: new VIZI.LatLon(44.943840,-93.298372)
 });
 
 
@@ -165,7 +165,7 @@ var csvConfig = {
   input: {
     type: "BlueprintInputCSV",
     options: {
-      path: "./data/data.csv"
+      path: "./data/uptown-data.csv"
     }
   },
   output: {

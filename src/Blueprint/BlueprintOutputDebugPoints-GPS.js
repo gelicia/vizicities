@@ -55,15 +55,7 @@
     .key(function(d) { return d.coordinates[0] + "," + d.coordinates[1]; })
     .entries(data);
 
-    console.log(nestedData);
-
-    var material = new THREE.MeshBasicMaterial({
-      color: 0xff0000,
-      // vertexColors: THREE.VertexColors,
-      // ambient: 0xffffff,
-      // emissive: 0xcccccc,
-      shading: THREE.FlatShading
-    });
+   // console.log(nestedData);
 
     var barGeom = new THREE.BoxGeometry( 10, 1, 10 );
 
@@ -74,57 +66,50 @@
       vertices[v].y += 0.5;
     }
 
-    var combinedGeom = new THREE.Geometry();
-
     _.each(nestedData, function(point) {
       //the data is nested on coordinates so we can just use the first value
       var coords = point.values[0].coordinates;
-      var colors = d3.scale.category20c();
+      var colors = d3.scale.category20();
+      var heightOffset = 0;
 
       for (var i = 0; i < point.values.length; i++) {
+        var material = new THREE.MeshBasicMaterial({
+          color: colors(i),
+          // vertexColors: THREE.VertexColors,
+          // ambient: 0xffffff,
+          // emissive: 0xcccccc,
+          shading: THREE.FlatShading
+        });
+
         var offset = new VIZI.Point();
         var geoCoord = self.world.project(new VIZI.LatLon(coords[1], coords[0]));
 
         offset.x = -1 * geoCoord.x;
         offset.y = -1 * geoCoord.y;
 
-        // TODO: Get this from options
-
         //get height from strength
         var height = point.values[i].values[2]/4;
 
-        var mesh = new THREE.Mesh(barGeom);
+        console.log("height", height);
 
-        mesh.scale.y = height * (i+1);
+        var mesh = new THREE.Mesh(barGeom, material);
+
+        mesh.scale.y = height;
 
         // Offset
         mesh.position.x = -1 * offset.x;
         mesh.position.z = -1 * offset.y;
+        mesh.position.y = heightOffset;
+
+        heightOffset += height;
 
         // Flip as they are up-side down
         // mesh.rotation.x = 90 * Math.PI / 180;
 
         mesh.matrixAutoUpdate && mesh.updateMatrix();
-        combinedGeom.merge(mesh.geometry, mesh.matrix);
+        self.add(mesh);
       };
     });
-
-    // Move merged geom to 0,0 and return offset
-    var offset = combinedGeom.center();
-
-    var combinedMesh = new THREE.Mesh(combinedGeom, material);
-
-    // Use previously calculated offset to return merged mesh to correct position
-    // This allows frustum culling to work correctly
-    combinedMesh.position.x = -1 * offset.x;
-
-    // Removed for scale center to be correct
-    // Offset with applyMatrix above
-    combinedMesh.position.y = -1 * offset.y;
-
-    combinedMesh.position.z = -1 * offset.z;
-
-    self.add(combinedMesh);
   };
 
   VIZI.BlueprintOutputDebugPointsGPS.prototype.onAdd = function(world) {
