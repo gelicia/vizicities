@@ -54,8 +54,6 @@
       return d.values[0];
     }).map(function(d){ return d.values[0];});
 
-    console.log(colorMap);
-
     var colorScale = d3.scale.cubehelix()
         .domain([0, (colorMap.length/2), colorMap.length])
         .range([
@@ -67,8 +65,6 @@
     var nestedData = d3.nest()
     .key(function(d) { return d.coordinates[0] + "," + d.coordinates[1]; })
     .entries(data);
-
-   // console.log(nestedData);
 
     var barGeom = new THREE.BoxGeometry( 10, 1, 10 );
 
@@ -84,12 +80,8 @@
       var coords = point.values[0].coordinates;
       var heightOffset = 0;
 
-      for (var i = 0; i < (point.values.length); i++){//point.values.length; i++) {
-
-       getIndex(colorMap, point.values[i].values[0]).then(function(colorIndex){
-          
-          //console.log("what", point.values[i].values[0], colorIndex);
-          
+      for (var i = 0; i < (point.values.length-1); i++){
+        getIndex(colorMap, point.values[i].values[0]).then(function(colorIndex){
           var material = new THREE.MeshBasicMaterial({
             color: colorScale(colorIndex),
             // vertexColors: THREE.VertexColors,
@@ -104,10 +96,7 @@
           offset.x = -1 * geoCoord.x;
           offset.y = -1 * geoCoord.y;
 
-          //get height from strength
           var height = point.values[i].values[2]/4;
-
-          //console.log("height", height);
 
           var mesh = new THREE.Mesh(barGeom, material);
 
@@ -125,6 +114,8 @@
 
           mesh.matrixAutoUpdate && mesh.updateMatrix();
           self.add(mesh);
+        }).fail(function(error){
+          console.log(error.stack);
         });
       }
     });
@@ -138,10 +129,12 @@
 
   function getIndex(array, name){
     var deferred = Q.defer();
+    var returnedIdx = -1;
 
     for (var i = 0; i < array.length; i++) {
       if (array[i] === name){
-        deferred.resolve(i);
+        returnedIdx = i;
+        deferred.resolve(returnedIdx);
       }
     }
 
