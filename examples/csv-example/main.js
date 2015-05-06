@@ -15,8 +15,8 @@ var pickControls = new VIZI.ControlsMousePick(world.camera, {
 });
 
 var descriptionUI = new VIZI.DescriptionUI({
-  title: "Basic example",
-  body: "This is a basic example showing a 2D basemap, 3D building tiles and a choropleth of population density."
+  title: "Wireless Networks",
+  body: "Each wireless network has a color"
 });
 
 var mapConfig = {

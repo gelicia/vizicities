@@ -17,7 +17,7 @@
     VIZI.BlueprintOutput.call(self, options);
 
     _.defaults(self.options, {
-      name: "Debug points"
+      name: "GPS Points"
     });
 
     // Triggers and actions reference
@@ -66,14 +66,14 @@
     .key(function(d) { return d.coordinates[0] + "," + d.coordinates[1]; })
     .entries(data);
 
-    var barGeom = new THREE.BoxGeometry( 10, 1, 10 );
+    /*var barGeom = new THREE.BoxGeometry( 10, 1, 10 );
 
     // Shift each vertex by half the bar height
     // This means it will scale from the bottom rather than the centre
     var vertices = barGeom.vertices;
     for (var v = 0; v < vertices.length; v++) {
       vertices[v].y += 0.5;
-    }
+    }*/
 
     _.each(nestedData, function(point) {
       //the data is nested on coordinates so we can just use the first value
@@ -82,6 +82,15 @@
 
       for (var i = 0; i < (point.values.length-1); i++){
         getIndex(colorMap, point.values[i].values[0]).then(function(colorIndex){
+          var barGeom = new THREE.BoxGeometry( 10, 1, 10 );
+
+          // Shift each vertex by half the bar height
+          // This means it will scale from the bottom rather than the centre
+          var vertices = barGeom.vertices;
+          for (var v = 0; v < vertices.length; v++) {
+            vertices[v].y += 0.5;
+          }
+
           var material = new THREE.MeshBasicMaterial({
             color: colorScale(colorIndex),
             // vertexColors: THREE.VertexColors,
@@ -112,8 +121,36 @@
           // Flip as they are up-side down
           // mesh.rotation.x = 90 * Math.PI / 180;
 
+          self.world.addPickable(mesh, barGeom.id);
+
+          VIZI.Messenger.on("pick-click:" + barGeom.id, function() {
+            // Do nothing if hidden
+            if (self.hidden) {
+              return;
+            }
+
+            console.log("Clicked:", barGeom.id);
+            var pickedId;
+
+            // Create info panel
+            if (self.infoUI) {
+              if (self.lastPickedIdClick) {
+                self.infoUI.removePanel(self.lastPickedIdClick);
+                pickedId = undefined;
+              }
+
+              if (!self.lastPickedIdClick || self.lastPickedIdClick !== self.pickedMesh.id) {
+                self.infoUI.addPanel(self.pickedMesh, feature.value);
+                pickedId = self.pickedMesh.id;
+              }
+            }
+
+            self.lastPickedIdClick = pickedId;
+          });
+
           mesh.matrixAutoUpdate && mesh.updateMatrix();
           self.add(mesh);
+          console.log("THIS", self);
         }).fail(function(error){
           console.log(error.stack);
         });
